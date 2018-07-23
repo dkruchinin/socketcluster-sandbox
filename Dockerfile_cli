@@ -1,0 +1,15 @@
+FROM node:8-slim
+MAINTAINER Dan Kruchinin
+
+LABEL version="1.0.0"
+LABEL description="Test clients for socketcluster"
+
+WORKDIR /usr/src/
+COPY clients/* /usr/src/
+
+RUN apt-get update && apt-get install -y git
+RUN npm i npm@latest -g
+RUN npm install
+
+CMD ["tail", "-f", "/dev/null"]
+

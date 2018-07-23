@@ -1,0 +1,65 @@
+version: '3.5'
+
+services:
+    proxy:
+      image: dockercloud/haproxy
+      depends_on:
+        - socketcluster
+      volumes:
+        - /var/run/docker.sock:/var/run/docker.sock
+      ports:
+        - 8080:80
+      networks:
+        - scc
+      deploy:
+        placement:
+          constraints: [node.role == manager]
+
+    socketcluster:
+      image: socketcluster/socketcluster:v14.0.4
+      ports:
+        - 8000
+      environment:
+        - SCC_STATE_SERVER_HOST=scc_state
+        - SERVICE_PORTS=8000
+        - SOCKETCLUSTER_PORT=8000
+        - SOCKETCLUSTER_WORKERS=2
+      deploy:
+        replicas: 2
+      networks:
+        - scc
+      depends_on:
+        - scc_state
+        - scc_broker
+
+    scc_broker:
+      image: socketcluster/scc-broker:v6.0.1
+      environment:
+        - SCC_STATE_SERVER_HOST=scc_state
+        - SCC_BROKER_SERVER_LOG_LEVEL=3
+      deploy:
+        replicas: 2
+      networks:
+        - scc
+      depends_on:
+        - scc_state
+
+    scc_state:
+      image: socketcluster/scc-state:v6.1.0
+      environment:
+        - SCC_STATE_LOG_LEVEL=3
+      networks:
+        - scc
+
+    socketcluster_client:
+        image: socketcluster_client:latest
+        networks:
+          - scc
+        deploy:
+            replicas: 3
+        depends_on:
+            - proxy
+
+networks:
+  scc:
+    driver: overlay
