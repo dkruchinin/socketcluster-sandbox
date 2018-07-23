@@ -10,4 +10,4 @@ deploy:
 	docker stack deploy --compose-file=docker-compose.yml sandbox
 
 stop:
-	docker stack rm prod
+	docker stack rm sandbox
