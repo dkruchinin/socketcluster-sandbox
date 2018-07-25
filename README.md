@@ -3,7 +3,7 @@
 I created this repo to simplify a setup for testing different failure modes of socketcluster. It spawns up two standard
 socketcluster workers sitting behind a round-robin load balancer (haproxy), two scc-broker nodes, one scc-state instace and
 three containers with socketcluster clients that can work as either publishers or subscribers. I also use [pubmba](https://github.com/alexei-led/pumba)
-to emulate network delays and kill containers.
+to emulate network delays and kill containers. See [SocketCluster/socketcluster#435](https://github.com/SocketCluster/socketcluster/issues/435) for more details.
 
 # Building and running
 
